@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@include('layouts.sidebar')
+
 @section('content')
     <div class="max-w-6xl mx-auto py-6">
         <h1 class="text-3xl font-bold mb-4">Eventos</h1>
@@ -21,9 +23,9 @@
                 @foreach ($events as $event)
                     <tr class="border-b">
                         <td class="px-4 py-2">{{ $event->title }}</td>
-                        <td class="px-4 py-2">{{ $event->start_date->format('d/m/Y H:i') }}</td>
+                        <td class="px-4 py-2">{{ $event->start_datetime }}</td>
                         <td class="px-4 py-2">{{ $event->location }}</td>
-                        <td class="px-4 py-2">{{ $event->capacity }}</td>
+                        <td class="px-4 py-2">{{ $event->max_capacity }}</td>
                         <td class="px-4 py-2">{{ ucfirst($event->status) }}</td>
                         <td class="px-4 py-2 flex gap-2">
                             <a href="{{ route('events.edit', $event->id) }}"
