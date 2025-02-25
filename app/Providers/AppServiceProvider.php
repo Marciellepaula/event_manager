@@ -30,5 +30,12 @@ class AppServiceProvider extends ServiceProvider
                 return $user->role->hasPermission($ability);
             }
         });
+
+
+
+        Gate::define('isAdmin', function (User $user) {
+            Log::info('Checking if user is admin: ' . $user->role_id);
+            return $user->role_id === 1;
+        });
     }
 }
