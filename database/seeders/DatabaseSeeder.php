@@ -21,5 +21,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role_id' => 3,
         ]);
+
+
+        $this->call([
+            EventSeeder::class,
+            RegistrationSeeder::class,
+        ]);
     }
 }
