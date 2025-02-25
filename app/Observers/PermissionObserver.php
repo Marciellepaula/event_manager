@@ -18,6 +18,8 @@ class PermissionObserver
         });
     }
 
+
+
     /**
      * Handle the Permission "updated" event.
      */
