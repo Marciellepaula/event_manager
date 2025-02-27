@@ -3,47 +3,48 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event;
+use App\Services\EventSubscriptionService;
 use Illuminate\Http\Request;
 
 class RegistrationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $eventSubscriptionService;
+
+    public function __construct(EventSubscriptionService $eventSubscriptionService)
+    {
+        $this->eventSubscriptionService = $eventSubscriptionService;
+    }
+
     public function index()
     {
-        //
+        $events = Event::all();
+        return response()->json($events);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function subscribeToEvent($eventId)
     {
-        //
+        $response = $this->eventSubscriptionService->subscribeToEvent($eventId);
+
+        if (isset($response['error'])) {
+            return response()->json(['error' => $response['error']], 400);
+        }
+
+        if (isset($response['success'])) {
+            return response()->json(['success' => $response['success']], 200);
+        }
+
+        return response()->json(['error' => 'Erro desconhecido ao tentar se inscrever.'], 500);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function unsubscribeFromEvent($eventId)
     {
-        //
-    }
+        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (isset($response['success'])) {
+            return response()->json(['success' => $response['success']], 200);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['error' => 'Erro desconhecido ao tentar se desinscrever.'], 500);
     }
 }
