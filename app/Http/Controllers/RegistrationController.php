@@ -27,7 +27,7 @@ class RegistrationController extends Controller
     {
 
         $user = Auth::user();
-        $response = $this->eventSubscriptionService->subscribeToEvent($eventId, $user);
+        $response = $this->eventSubscriptionService->subscribeToEvent($user, $eventId);
 
 
         if (isset($response['error'])) {
@@ -48,7 +48,7 @@ class RegistrationController extends Controller
     {
 
         $user = Auth::user();
-        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId, $user);
+        $response = $this->eventSubscriptionService->unsubscribeFromEvent($user, $eventId);
         if (isset($response['success'])) {
             return redirect()->back()->with('success', $response['success']);
         }
