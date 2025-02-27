@@ -5,24 +5,20 @@ namespace App\Services;
 use App\Jobs\SendEventSubscriptionEmail;
 use App\Models\Event;
 use App\Models\Registration;
-use App\Jobs\SendEventUnsubscribedEmail;
 use App\Jobs\SendEventUnsubscriptionEmail;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class EventSubscriptionService
 {
-    public function subscribeToEvent($eventId)
+    public function subscribeToEvent($eventId, User $user)
     {
-        $user = Auth::user();
         $event = Event::findOrFail($eventId);
 
-
-
-        if ($registrationCount = Registration::where('event_id', $event->id)->count() >= $event->max_capacity || $event->status !== 'open') {
+        $registrationCount = Registration::where('event_id', $event->id)->count();
+        if ($registrationCount >= $event->max_capacity || $event->status !== 'open') {
             return ['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.'];
         }
-
 
         if ($user->registrations()->where('event_id', $eventId)->exists()) {
             return ['error' => 'Você já está inscrito neste evento.'];
@@ -34,10 +30,9 @@ class EventSubscriptionService
         ]);
 
         try {
-
-            SendEventSubscriptionEmail::dispatch($user, $event);
+            SendEventSubscriptionEmail::dispatch($user->id, $event->id);
         } catch (\Exception $e) {
-            Log::error('Error dispatching subscription email: ' . $e->getMessage());
+            Log::error('Erro ao enfileirar o e-mail de inscrição: ' . $e->getMessage());
         }
 
         return ['success' => 'Inscrição realizada com sucesso!'];
@@ -47,14 +42,14 @@ class EventSubscriptionService
     public function getAllEventsOpen()
     {
 
-        return  Event::where('status', '=', 'open')->get();
+        return  Event::where('status', '=', 'open')->paginate(10);
     }
 
 
 
-    public function unsubscribeFromEvent($eventId)
+    public function unsubscribeFromEvent($eventId, User $user)
     {
-        $user = auth()->user();
+
         $event = Event::findOrFail($eventId);
 
         $registration = Registration::where('user_id', $user->id)
@@ -69,7 +64,7 @@ class EventSubscriptionService
 
 
         try {
-            SendEventUnsubscriptionEmail::dispatch($user, $event);
+            SendEventUnsubscriptionEmail::dispatch($user->id, $event->id);
         } catch (\Exception $e) {
 
             Log::error('Error dispatching unsubscribe email: ' . $e->getMessage());
