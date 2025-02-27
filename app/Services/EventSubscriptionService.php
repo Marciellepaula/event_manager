@@ -44,6 +44,14 @@ class EventSubscriptionService
     }
 
 
+    public function getAllEventsOpen()
+    {
+
+        return  Event::where('status', '=', 'open')->get();
+    }
+
+
+
     public function unsubscribeFromEvent($eventId)
     {
         $user = auth()->user();
