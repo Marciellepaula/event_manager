@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class EventSubscriptionService
 {
-    public function subscribeToEvent($eventId, User $user)
+    public function subscribeToEvent(User $user, $eventId)
     {
         $event = Event::findOrFail($eventId);
 
@@ -47,7 +47,7 @@ class EventSubscriptionService
 
 
 
-    public function unsubscribeFromEvent($eventId, User $user)
+    public function unsubscribeFromEvent(User $user, $eventId)
     {
 
         $event = Event::findOrFail($eventId);
