@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
 use App\Models\Registration;
+use App\Services\EventService;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    protected $eventService;
+
+    public function __construct(EventService $eventService)
+    {
+        $this->eventService = $eventService;
+    }
+
     public function index()
     {
-        $events = Event::where('status', 'open')->get();
+        $events = $this->eventService->getAllEvents();
         return view('admin.events.index', compact('events'));
-    }
-
-
-    public function painel()
-    {
-        $events = Event::where('status', 'open')->get();
-        return view('admin.index', compact('events'));
-    }
-
-
-    public function show($id)
-    {
-        $event = Event::findOrFail($id);
-        return view('admin.events.show', compact('event'));
     }
 
     public function create()
@@ -35,57 +28,56 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_datetime' => 'required|date',
-            'end_datetime' => 'required|date|after:start_datetime',
-            'location' => 'required|string|max:255',
-            'max_capacity' => 'required|integer|min:1',
-            'status' => 'required|in:open,closed,canceled',
-        ]);
+        $validatedData = $this->eventService->validateEvent($request);
 
-        Event::create($request->all());
+        $event = $this->eventService->createEvent($validatedData);
 
-        return redirect()->route('admin.events.index')->with('success', 'Evento criado com sucesso!');
+        return $event
+            ? redirect()->route('events.index')->with('success', 'Evento criado com sucesso!')
+            : redirect()->back()->with('error', 'Erro ao criar evento.');
+    }
+
+    public function show($id)
+    {
+        $event = $this->eventService->getEventById($id);
+        return view('admin.events.show', compact('event'));
     }
 
     public function edit($id)
     {
-        $event = Event::findOrFail($id);
+        $event = $this->eventService->getEventById($id);
         return view('admin.events.edit', compact('event'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_datetime' => 'required|date',
-            'end_datetime' => 'required|date|after:start_datetime',
-            'location' => 'required|string|max:255',
-            'max_capacity' => 'required|integer|min:1',
-            'status' => 'required|in:open,closed,canceled',
-        ]);
+        $validatedData = $this->eventService->validateEvent($request);
 
-        $event = Event::findOrFail($id);
-        $event->update($request->all());
+        $updatedEvent = $this->eventService->updateEvent($id, $validatedData);
 
-        return redirect()->route('admin.events.index')->with('success', 'Evento atualizado com sucesso!');
+        return $updatedEvent
+            ? redirect()->route('events.index')->with('success', 'Evento atualizado com sucesso!')
+            : redirect()->back()->with('error', 'Erro ao atualizar evento.');
+    }
+
+    public function destroy($id)
+    {
+        $deleted = $this->eventService->deleteEvent($id);
+
+        return $deleted
+            ? redirect()->route('events.index')->with('success', 'Evento deletado com sucesso!')
+            : redirect()->back()->with('error', 'Erro ao deletar evento.');
     }
 
     public function showregistrations()
     {
         $registrations = Registration::with('event')->get();
-
         return view('admin.registration.index', compact('registrations'));
     }
 
-    public function destroy($id)
+    public function painel()
     {
-        $event = Event::findOrFail($id);
-        $event->delete();
-
-        return redirect()->route('admin.events.index')->with('success', 'Evento deletado com sucesso!');
+        $events = $this->eventService->getAllEvents();
+        return view('admin.events.index', compact('events'));
     }
 }
