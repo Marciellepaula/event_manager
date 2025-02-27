@@ -1,22 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex h-screen py-8  text-gray-200">
+    <div class="flex flex-col h-screen py-8 bg-gray-100">
         <main class="flex-1 p-6">
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900">Eventos</h3>
-
-                    <div class="flex space-x-4">
-                        <select class="border text-gray-900  rounded px-5 py-2">
-                            <option class = "text-gray-900" value="all">Todos</option>
-                            <option class = "text-gray-900" value="active">Ativos</option>
-                            <option class = "text-gray-900" value="inactive">Inativos</option>
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-4 py-5 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <h3 class="text-lg font-medium text-gray-900">Eventos</h3>
+                    <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                        <select
+                            class="border border-gray-300 text-gray-900 rounded px-5 py-2 focus:outline-none focus:ring focus:border-blue-300">
+                            <option value="all">Todos</option>
+                            <option value="active">Ativos</option>
+                            <option value="inactive">Inativos</option>
                         </select>
-                        <input type="date" class="border text-gray-900 rounded px-2 py-1" />
+                        <input type="date"
+                            class="border border-gray-300 text-gray-900 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300" />
+                        <a href="{{ route('events.create') }}"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Novo Evento
+                        </a>
                     </div>
-                    <a href="{{ route('events.create') }}" class="bg-blue-600 px-4 py-2 rounded text-white">Novo Evento</a>
                 </div>
+
 
                 <div class="border-t border-gray-200">
                     @if ($events->count())

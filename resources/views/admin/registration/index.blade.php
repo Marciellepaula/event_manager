@@ -7,16 +7,19 @@
 
             <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900">Lista de Inscrições</h3>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">Eventos</h3>
+
                     <div class="flex space-x-4">
-                        <select class="border border-gray-300 rounded px-2 py-1">
-                            <option value="all">Todos</option>
-                            <option value="active">Ativos</option>
-                            <option value="inactive">Inativos</option>
+                        <select class="border text-gray-900  rounded px-5 py-2">
+                            <option class = "text-gray-900" value="all">Todos</option>
+                            <option class = "text-gray-900" value="active">Ativos</option>
+                            <option class = "text-gray-900" value="inactive">Inativos</option>
                         </select>
-                        <input type="date" class="border border-gray-300 rounded px-2 py-1" />
+                        <input type="date" class="border text-gray-900 rounded px-2 py-1" />
                     </div>
+
                 </div>
+
 
                 <div class="border-t border-gray-200">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -44,6 +47,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="p-4 !bg-white">
+                        {{ $registrations->links() }}
+                    </div>
                 </div>
             </div>
     </div>
