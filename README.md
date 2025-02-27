@@ -55,22 +55,12 @@ e em seguida executar as seeders para popular o banco
 ./vendor/bin/sail artisan db:seed  
 ```
 
-```# SPA Products
-
-
-
-
 ## Tecnologias Utilizadas
 
 - **Docker**
 - **Laravel 11**
 - **PHP**
 
-
-
-## Começando
-
-Siga os passos abaixo para rodar o projeto localmente.
 
 ### Pré-requisitos
 
