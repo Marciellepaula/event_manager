@@ -77,6 +77,6 @@ class EventController extends Controller
     public function painel()
     {
         $events = $this->eventService->getAllEvents();
-        return view('admin.events.index', compact('events'));
+        return view('admin.index', compact('events'));
     }
 }
