@@ -12,7 +12,7 @@ class Registration extends Model
 
     protected $fillable = [
         'event_id',
-        'participant_id',
+        'user_id',
 
     ];
 
