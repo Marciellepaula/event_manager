@@ -33,7 +33,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user, $event->id);
 
         $this->assertEquals(['success' => 'Inscrição realizada com sucesso!'], $response);
         $this->assertDatabaseHas('registrations', [
@@ -56,7 +56,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user, $event->id);
 
         $this->assertEquals(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.'], $response);
     }
@@ -72,7 +72,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user, $event->id);
 
         $this->assertEquals(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.'], $response);
     }
@@ -89,7 +89,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user, $event->id);
 
         $this->assertEquals(['error' => 'Você já está inscrito neste evento.'], $response);
     }
@@ -108,7 +108,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($event->id);
+        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($user, $event->id);
 
         $this->assertEquals(['success' => 'Inscrição cancelada com sucesso!'], $response);
         $this->assertSoftDeleted('registrations', [
@@ -129,7 +129,7 @@ class RegistrationControllerTest extends TestCase
 
         Auth::login($user);
 
-        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($event->id);
+        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($user, $event->id);
 
         $this->assertEquals(['error' => 'Inscrição não encontrada.'], $response);
     }
