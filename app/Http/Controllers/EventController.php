@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Registration;
 use App\Services\EventService;
 use Illuminate\Http\Request;
 
@@ -71,7 +70,7 @@ class EventController extends Controller
 
     public function showregistrations()
     {
-        $registrations = Registration::with('event')->get();
+        $registrations = $this->eventService->getAllEventsRegistration();
         return view('admin.registration.index', compact('registrations'));
     }
 
