@@ -22,24 +22,24 @@ class RegistrationController extends Controller
         return response()->json($events);
     }
 
-    public function subscribeToEvent($eventId)
+    public function subscribeToEvent(Request $request, $eventId)
     {
-        $response = $this->eventSubscriptionService->subscribeToEvent($eventId);
+        $user = $request->user();
+
+        $response = $this->eventSubscriptionService->subscribeToEvent($user, $eventId);
 
         if (isset($response['error'])) {
             return response()->json(['error' => $response['error']], 400);
         }
 
-        if (isset($response['success'])) {
-            return response()->json(['success' => $response['success']], 200);
-        }
-
-        return response()->json(['error' => 'Erro desconhecido ao tentar se inscrever.'], 500);
+        return response()->json(['success' => $response['success']], 200);
     }
 
-    public function unsubscribeFromEvent($eventId)
+    public function unsubscribeFromEvent(Request $request, $eventId)
     {
-        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId);
+        $user = $request->user();
+
+        $response = $this->eventSubscriptionService->unsubscribeFromEvent($user, $eventId);
 
         if (isset($response['success'])) {
             return response()->json(['success' => $response['success']], 200);
