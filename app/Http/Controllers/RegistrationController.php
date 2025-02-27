@@ -4,58 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Registration;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use App\Services\EventSubscriptionService;
+
 
 class RegistrationController extends Controller
 {
+
+    protected $eventSubscriptionService;
+
+    public function __construct(EventSubscriptionService $eventSubscriptionService)
+    {
+        $this->eventSubscriptionService = $eventSubscriptionService;
+    }
+
     public function index()
     {
-        // $inscricoes = Registration::where('user_id', Auth::id())->with('event')->get();
 
-        $events = Event::where('status', 'open')->get();
+        $events = Event::get();
         return view('participant.index', compact('events'));
     }
 
 
-    public function inscrever($eventoId)
+
+    public function subscribeToEvent($eventId)
     {
-        $user = auth()->user();
-        $event = Event::findOrFail($eventoId);
 
-        if ($event->status !== 'open' || $event->registrations()->count() >= $event->max_capacity) {
-            return redirect()->back()->with('error', 'Inscrição não permitida.');
+        $response = $this->eventSubscriptionService->subscribeToEvent($eventId);
+
+
+        if (isset($response['error'])) {
+            return redirect()->back()->with('error', $response['error']);
         }
 
-        if ($user->registrations()->where('event_id', $eventoId)->exists()) {
-            return redirect()->back()->with('error', 'Você já está inscrito neste evento.');
+        if (isset($response['success'])) {
+            return redirect()->back()->with('success', $response['success']);
         }
 
-        $registration = $user->registrations()->create([
-            'event_id' => $eventoId,
-            'user_id' => $user->id
-        ]);
 
-
-
-        return redirect()->back()->with('success', 'Inscrição realizada com sucesso!');
+        return redirect()->back()->with('error', 'Erro desconhecido ao tentar inscrever.');
     }
 
 
 
-
-    public function cancelar($eventoId)
+    public function unsubscribeFromEvent($eventId)
     {
-        $user = auth()->user();
-        $registration = $user->registrations()->where('event_id', $eventoId)->first();
 
-        if (!$registration) {
-            return redirect()->back()->with('error', 'Você não está inscrito neste evento.');
+        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId);
+        if (isset($response['success'])) {
+            return redirect()->back()->with('success', $response['success']);
         }
 
-        $registration->delete();
-
-        return redirect()->back()->with('success', 'Inscrição cancelada.');
+        return redirect()->back()->with('error', 'Erro desconhecido ao tentar inscrever.');
     }
 }
