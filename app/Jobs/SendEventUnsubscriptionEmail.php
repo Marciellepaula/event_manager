@@ -2,30 +2,31 @@
 
 namespace App\Jobs;
 
-use App\Mail\EventSubscriptionMail;
 use App\Mail\EventUnsubscriptionMail;
-use App\Models\Event;
 use App\Models\User;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
 class SendEventUnsubscriptionEmail implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $event;
-    public $user;
+    public int $userId;
+    public int $eventId;
 
-    public function __construct(User $user, Event $event,)
+    public function __construct(int $userId, int $eventId)
     {
-        $this->event = $event;
-        $this->user = $user;
+        $this->userId = $userId;
+        $this->eventId = $eventId;
     }
 
     public function handle()
     {
-        Mail::to($this->user->email)->send(new EventUnsubscriptionMail($this->user, $this->event));
+        Mail::to(User::find($this->userId)?->email)
+            ->send(new EventUnsubscriptionMail($this->userId, $this->eventId));
     }
 }
