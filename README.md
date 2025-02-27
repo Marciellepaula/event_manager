@@ -66,7 +66,7 @@ e em seguida executar as seeders para popular o banco
 
 Certifique-se de ter os seguintes itens instalados:
 
-- **Node.js** (>=16.x)
+- **Node.js** (v18.18.2)
 - **npm** ou **yarn**
 
 
