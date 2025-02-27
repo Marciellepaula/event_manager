@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\EventSubscriptionService;
-
+use Illuminate\Support\Facades\Auth;
 
 class RegistrationController extends Controller
 {
@@ -26,7 +26,8 @@ class RegistrationController extends Controller
     public function subscribeToEvent($eventId)
     {
 
-        $response = $this->eventSubscriptionService->subscribeToEvent($eventId);
+        $user = Auth::user();
+        $response = $this->eventSubscriptionService->subscribeToEvent($eventId, $user);
 
 
         if (isset($response['error'])) {
@@ -46,7 +47,8 @@ class RegistrationController extends Controller
     public function unsubscribeFromEvent($eventId)
     {
 
-        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId);
+        $user = Auth::user();
+        $response = $this->eventSubscriptionService->unsubscribeFromEvent($eventId, $user);
         if (isset($response['success'])) {
             return redirect()->back()->with('success', $response['success']);
         }
