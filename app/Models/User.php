@@ -52,12 +52,6 @@ class User extends Authenticatable implements Authorizable
             'password' => 'hashed',
         ];
     }
-
-    // public function setPasswordAttribute($value)
-    // {
-    //     $this->attributes['password'] = Hash::make($value);
-    // }
-
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
