@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
-use App\Models\Registration;
 use App\Services\EventSubscriptionService;
 
 
@@ -19,11 +17,10 @@ class RegistrationController extends Controller
 
     public function index()
     {
+        $events = $this->eventSubscriptionService->getAllEventsOpen();
 
-        $events = Event::get();
         return view('participant.index', compact('events'));
     }
-
 
 
     public function subscribeToEvent($eventId)
