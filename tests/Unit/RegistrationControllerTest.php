@@ -45,7 +45,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['success' => 'Inscrição realizada com sucesso!']);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user->id, $event->id);
 
         $this->assertEquals(['success' => 'Inscrição realizada com sucesso!'], $response);
         Bus::assertDispatched(SendEventSubscriptionEmail::class);
@@ -66,7 +66,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.']);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user->id, $event->id);
 
         $this->assertEquals(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.'], $response);
     }
@@ -85,7 +85,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.']);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user->id, $event->id);
 
         $this->assertEquals(['error' => 'Capacidade máxima atingida ou o evento não está mais aberto.'], $response);
     }
@@ -106,7 +106,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['error' => 'Você já está inscrito neste evento.']);
 
-        $response = app(EventSubscriptionService::class)->subscribeToEvent($event->id);
+        $response = app(EventSubscriptionService::class)->subscribeToEvent($user->id, $event->id);
 
         $this->assertEquals(['error' => 'Você já está inscrito neste evento.'], $response);
     }
@@ -129,7 +129,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['success' => 'Inscrição cancelada com sucesso!']);
 
-        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($event->id);
+        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($user->id, $event->id);
 
         $this->assertEquals(['success' => 'Inscrição cancelada com sucesso!'], $response);
         Bus::assertDispatched(SendEventUnsubscriptionEmail::class);
@@ -149,7 +149,7 @@ class RegistrationControllerTest extends TestCase
             ->with($event->id)
             ->andReturn(['error' => 'Inscrição não encontrada.']);
 
-        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($event->id);
+        $response = app(EventSubscriptionService::class)->unsubscribeFromEvent($user->id, $event->id);
 
         $this->assertEquals(['error' => 'Inscrição não encontrada.'], $response);
     }
