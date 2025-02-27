@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\User;
+use App\Services\EventService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -11,6 +12,17 @@ use PHPUnit\Framework\Attributes\Test;
 class EventControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected EventService $eventService;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->eventService = $this->app->make(EventService::class);
+    }
+
+
 
     #[Test]
     public function it_shows_event_index_page()
@@ -24,6 +36,8 @@ class EventControllerTest extends TestCase
     }
 
     #[Test]
+
+
     public function it_creates_an_event()
     {
 
