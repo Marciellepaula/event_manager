@@ -71,6 +71,6 @@ class EventService
 
     public function getAllEventsRegistration()
     {
-        return Registration::with('event')->get();
+        return Registration::with('event')->paginate(10);
     }
 }
