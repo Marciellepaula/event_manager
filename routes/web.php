@@ -43,11 +43,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('participant/inscricoes')->group(function () {
         Route::get('/', [RegistrationController::class, 'index'])->name('inscricoes.index');
-        Route::post('/{evento}/inscrever', [RegistrationController::class, 'inscrever'])->name('inscricoes.inscrever');
-        Route::post('/{evento}/cancelar', [RegistrationController::class, 'cancelar'])->name('inscricoes.cancelar');
+        Route::post('/{evento}/inscrever', [RegistrationController::class, 'subscribeToEvent'])->name('inscricoes.inscrever');
+        Route::post('/{evento}/cancelar', [RegistrationController::class, 'unsubscribeFromEvent'])->name('inscricoes.cancelar');
     });
 });
-
 
 
 require __DIR__ . '/auth.php';
