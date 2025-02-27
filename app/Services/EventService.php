@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Event;
+use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -65,5 +66,11 @@ class EventService
             Log::error('Error deleting event: ' . $e->getMessage());
             return false;
         }
+    }
+
+
+    public function getAllEventsRegistration()
+    {
+        return Registration::with('event')->get();
     }
 }
