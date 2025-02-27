@@ -7,42 +7,35 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class EventUnsubscriptionMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $event;
-    public $user;
+    public int $userId;
+    public int $eventId;
 
-    public function __construct(User $user, Event $event)
+    public function __construct(int $userId, int $eventId)
     {
-        $this->user = $user;
-        $this->event = $event;
-    }
-
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Cancelamento de Inscrição no Evento',
-        );
+        $this->userId = $userId;
+        $this->eventId = $eventId;
     }
 
     public function build()
     {
-        return $this->view('emails.event_unsubscribed')
-            ->subject('Cancelamento de Inscrição')
-            ->with([
-                'userName' => $this->user->name,
-                'eventTitle' => $this->event->title,
-            ]);
-    }
+        $user = User::find($this->userId);
+        $event = Event::find($this->eventId);
 
-    public function attachments(): array
-    {
-        return [];
+        if (!$user || !$event) {
+            return $this;
+        }
+
+        return $this->subject('Cancelamento de Inscrição')
+            ->markdown('emails.event_unsubscribed')
+            ->with([
+                'userName' => $user->name,
+                'eventTitle' => $event->title,
+            ]);
     }
 }

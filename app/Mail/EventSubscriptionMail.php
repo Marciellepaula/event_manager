@@ -7,55 +7,32 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class EventSubscriptionMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public $event;
-    public $user;
+    public int $userId;
+    public int $eventId;
 
-    public function __construct(User $user, Event $event)
+    public function __construct(int $userId, int $eventId)
     {
-        $this->user = $user;
-        $this->event = $event;
-    }
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Event Subscription Mail',
-        );
+        $this->userId = $userId;
+        $this->eventId = $eventId;
     }
 
     public function build()
     {
-        return $this->view('emails.event_subscribed')
-            ->subject('Inscrição no Evento')
+
+        $user = User::findOrFail($this->userId);
+        $event = Event::findOrFail($this->eventId);
+
+        return $this->subject('Inscrição no Evento')
+            ->markdown('emails.event_subscribed')
             ->with([
-                'userName' => $this->user->name,
-                'eventTitle' => $this->event->title,
+                'userName' => $user->name,
+                'eventTitle' => $event->title,
             ]);
-    }
-
-
-
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }
